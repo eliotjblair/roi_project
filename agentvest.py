@@ -16,7 +16,6 @@ class ROIForm(BoxLayout):
             ("Loan Interest Rate (%)", "interest_rate"),
             ("Loan Term (Years)", "loan_term"),
             ("Monthly Rent", "monthly_rent"),
-            ("Monthly Expenses (Total)", "monthly_expenses")
             ("Property Taxes (Monthly)", "taxes"),
             ("Insurance (Monthly)", "insurance"),
             ("HOA Fees (Monthly)", "hoa"),
