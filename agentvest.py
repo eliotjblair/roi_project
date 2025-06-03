@@ -17,6 +17,12 @@ class ROIForm(BoxLayout):
             ("Loan Term (Years)", "loan_term"),
             ("Monthly Rent", "monthly_rent"),
             ("Monthly Expenses (Total)", "monthly_expenses")
+            ("Property Taxes (Monthly)", "taxes"),
+            ("Insurance (Monthly)", "insurance"),
+            ("HOA Fees (Monthly)", "hoa"),
+            ("Maintenance (Monthly)", "maintenance"),
+            ("Property Management (%)", "management_percent"),
+            ("Vacancy Rate (%)", "vacancy_percent")
         ]
 
         for label_text, key in fields:
@@ -34,6 +40,7 @@ class ROIForm(BoxLayout):
 
     def calculate_roi(self, instance):
         try:
+            # Base Inputs
             purchase_price = float(self.inputs["purchase_price"].text)
             down_payment = float(self.inputs["down_payment"].text)
             interest_rate = float(self.inputs["interest_rate"].text) / 100 / 12
@@ -41,10 +48,21 @@ class ROIForm(BoxLayout):
             monthly_rent = float(self.inputs["monthly_rent"].text)
             monthly_expenses = float(self.inputs["monthly_expenses"].text)
 
-            loan_amount = purchase_price - down_payment
+            # Expense Inputs
+            taxes = float(self.inputs["taxes"].text)
+            insurance = float(self.inputs["insurance"].text)
+            hoa = float(self.inputs["hoa"].text)
+            maintenance = float(self.inputs["maintenance"].text)
+            management_percent = float(self.inputs["management_percent"].text) / 100
+            vacancy_percent = float(self.inputs["vacancy_percent"].text) / 100
 
-            # Monthly mortgage payment using amortization formula
+            # Loan Calculation
+            loan_amount = purchase_price - down_payment
             mortgage_payment = loan_amount * (interest_rate * (1 + interest_rate) ** loan_term) / ((1 + interest_rate) ** loan_term - 1)
+
+            # Management and vacancy cost (based on rent)
+            property_management = monthly_rent * management_percent
+            vacancy = monthly_rent * vacancy_percent
 
             total_monthly_expenses = mortgage_payment + monthly_expenses
             monthly_cash_flow = monthly_rent - total_monthly_expenses
@@ -54,6 +72,7 @@ class ROIForm(BoxLayout):
             result = f"Monthly Cash Flow: ${monthly_cash_flow:.2f}\n"
             result += f"Annual Cash Flow: ${annual_cash_flow:.2f}\n"
             result += f"Cash-on-Cash ROI: {cash_on_cash_roi:.2f}%"
+            
             self.result_label.text = result
 
         except Exception as e:
