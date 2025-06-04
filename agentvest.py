@@ -38,44 +38,42 @@ class ROIForm(BoxLayout):
         self.add_widget(self.result_label)
 
     def calculate_roi(self, instance):
-        try:
-            # Base Inputs
-            purchase_price = float(self.inputs["purchase_price"].text)
-            down_payment = float(self.inputs["down_payment"].text)
-            interest_rate = float(self.inputs["interest_rate"].text) / 100 / 12
-            loan_term = int(self.inputs["loan_term"].text) * 12
-            monthly_rent = float(self.inputs["monthly_rent"].text)
-            monthly_expenses = float(self.inputs["monthly_expenses"].text)
+    try:
+        purchase_price = float(self.inputs["purchase_price"].text)
+        down_payment = float(self.inputs["down_payment"].text)
+        interest_rate = float(self.inputs["interest_rate"].text) / 100 / 12
+        loan_term = int(self.inputs["loan_term"].text) * 12
+        monthly_rent = float(self.inputs["monthly_rent"].text)
 
-            # Expense Inputs
-            taxes = float(self.inputs["taxes"].text)
-            insurance = float(self.inputs["insurance"].text)
-            hoa = float(self.inputs["hoa"].text)
-            maintenance = float(self.inputs["maintenance"].text)
-            management_percent = float(self.inputs["management_percent"].text) / 100
-            vacancy_percent = float(self.inputs["vacancy_percent"].text) / 100
+        # Sum all detailed expenses:
+        taxes = float(self.inputs["taxes"].text)
+        insurance = float(self.inputs["insurance"].text)
+        hoa = float(self.inputs["hoa"].text)
+        maintenance = float(self.inputs["maintenance"].text)
+        management_percent = float(self.inputs["management_percent"].text) / 100
+        vacancy_percent = float(self.inputs["vacancy_percent"].text) / 100
 
-            # Loan Calculation
-            loan_amount = purchase_price - down_payment
-            mortgage_payment = loan_amount * (interest_rate * (1 + interest_rate) ** loan_term) / ((1 + interest_rate) ** loan_term - 1)
+        loan_amount = purchase_price - down_payment
 
-            # Management and vacancy cost (based on rent)
-            property_management = monthly_rent * management_percent
-            vacancy = monthly_rent * vacancy_percent
+        mortgage_payment = loan_amount * (interest_rate * (1 + interest_rate) ** loan_term) / ((1 + interest_rate) ** loan_term - 1)
 
-            total_monthly_expenses = mortgage_payment + monthly_expenses
-            monthly_cash_flow = monthly_rent - total_monthly_expenses
-            annual_cash_flow = monthly_cash_flow * 12
-            cash_on_cash_roi = (annual_cash_flow / down_payment) * 100
+        # Calculate management and vacancy fees based on rent
+        management_fees = monthly_rent * management_percent
+        vacancy_loss = monthly_rent * vacancy_percent
 
-            result = f"Monthly Cash Flow: ${monthly_cash_flow:.2f}\n"
-            result += f"Annual Cash Flow: ${annual_cash_flow:.2f}\n"
-            result += f"Cash-on-Cash ROI: {cash_on_cash_roi:.2f}%"
-            
-            self.result_label.text = result
+        total_monthly_expenses = mortgage_payment + taxes + insurance + hoa + maintenance + management_fees + vacancy_loss
 
-        except Exception as e:
-            self.result_label.text = f"Error: {str(e)}"
+        monthly_cash_flow = monthly_rent - total_monthly_expenses
+        annual_cash_flow = monthly_cash_flow * 12
+        cash_on_cash_roi = (annual_cash_flow / down_payment) * 100
+
+        result = f"Monthly Cash Flow: ${monthly_cash_flow:.2f}\n"
+        result += f"Annual Cash Flow: ${annual_cash_flow:.2f}\n"
+        result += f"Cash-on-Cash ROI: {cash_on_cash_roi:.2f}%"
+        self.result_label.text = result
+
+    except Exception as e:
+        self.result_label.text = f"Error: {str(e)}"
 
 
 class AgentVestApp(App):
