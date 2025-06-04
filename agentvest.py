@@ -19,12 +19,7 @@ class ROIForm(BoxLayout):
             ("Loan Interest Rate (%)", "interest_rate"),
             ("Loan Term (Years)", "loan_term"),
             ("Monthly Rent", "monthly_rent"),
-            ("Taxes", "taxes"),
-            ("Insurance", "insurance"),
-            ("HOA Fees", "hoa"),
-            ("Maintenance", "maintenance"),
-            ("Management %", "management_percent"),
-            ("Vacancy %", "vacancy_percent"),
+            ("Expenses (Taxes, Insurance, HOA, Maintenance, etc.)", "total_expenses"),
         ]
 
         for label_text, key in fields:
@@ -48,21 +43,12 @@ class ROIForm(BoxLayout):
             interest_rate = float(self.inputs["interest_rate"].text) / 100 / 12
             loan_term = int(self.inputs["loan_term"].text) * 12
             monthly_rent = float(self.inputs["monthly_rent"].text)
-
-            taxes = float(self.inputs["taxes"].text)
-            insurance = float(self.inputs["insurance"].text)
-            hoa = float(self.inputs["hoa"].text)
-            maintenance = float(self.inputs["maintenance"].text)
-            management_percent = float(self.inputs["management_percent"].text) / 100
-            vacancy_percent = float(self.inputs["vacancy_percent"].text) / 100
+            total_expenses = float(self.inputs["total_expenses"].text)
 
             loan_amount = purchase_price - down_payment
             mortgage_payment = loan_amount * (interest_rate * (1 + interest_rate) ** loan_term) / ((1 + interest_rate) ** loan_term - 1)
 
-            management_fees = monthly_rent * management_percent
-            vacancy_loss = monthly_rent * vacancy_percent
-
-            total_monthly_expenses = mortgage_payment + taxes + insurance + hoa + maintenance + management_fees + vacancy_loss
+            total_monthly_expenses = mortgage_payment + total_expenses
             monthly_cash_flow = monthly_rent - total_monthly_expenses
             annual_cash_flow = monthly_cash_flow * 12
             cash_on_cash_roi = (annual_cash_flow / down_payment) * 100
@@ -85,4 +71,5 @@ class AgentVestApp(App):
 
 if __name__ == "__main__":
     AgentVestApp().run()
+
 
