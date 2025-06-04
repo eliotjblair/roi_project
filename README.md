@@ -26,6 +26,6 @@ AgentVest is a mobile app built with Kivy that helps real estate agents and inve
 To run this app locally:
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/agentvest.git
+git clone https://github.com/eliotjblair/agentvest.git
 cd agentvest
-python main.py
+python agentvest.py
